@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SocialNet.Models
+@{
+    var username = User.Identity.Name;
+    //var user = UserManager.Users.ToList<AppUser>().Find();
+    var user = await UserManager.FindByEmailAsync(User.Identity.Name);
+
+}
+
+@inject UserManager<AppUser> UserManager
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<form asp-controller="Settings" asp-action="AddChange" enctype="multipart/form-data" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+
+                <label>Name:</label> <input type="text" name="name" />
+
+
+                <label>Surname:</label> <input type="text" name="surname" />
+
+
+                <label>Birth date:</label> <div class="row"> <input type="date" name="birthDate" /></div>
+
+                <label>Picture:</label> <input type="file" name="file" id ="getimage">
+
+                <button type="submit">Submit</button>
+            </div>
+
+            <div class="col-md-6">
+                @if (user.PicturePath == null)
+        {
+            <img src="~/images/noimage.jpg" id="imgstore" height="600" width="600"/>
+        }
+        else
+        {
+            <img src="~/images/@Html.Raw(user.UserName + ".png")" id="imgstore" height="600" width="600"/>
+        }
+
+                <script>
+                    function imageHandler(e2) {             
+                        document.getElementById('imgstore').setAttribute('src', e2.target.result);
+                    }
+
+                    function loadimage(e1) {
+                        var filename = e1.target.files[0];
+                        var fr = new FileReader();
+                        fr.onload = imageHandler;
+                        fr.readAsDataURL(filename);
+                    }
+
+                    window.onload = function () {
+                        var x = document.getElementById("getimage");
+                        x.addEventListener('change', loadimage, false);
+                    }
+              
+                </script>
+
+            </div>
+        </div>
+    </div>
+</form>
