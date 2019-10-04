@@ -5,47 +5,69 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNet.Data;
 using SocialNet.Models;
-
+using SocialNet.Models.Form;
 
 namespace SocialNet.Controllers
 {
-    public class SettingsController : Controller
+    public class SettingsController : BaseController
     {
-        public readonly ApplicationDbContext _context;
-        private IHostingEnvironment _env;
 
-        public SettingsController(IHostingEnvironment env,  ApplicationDbContext context)
-        {
-            _context = context;
-            _env = env;
-        }
-        public IActionResult Settings()
-        {
-            return View(_context);
-        }
+        public SettingsController(IHostingEnvironment env,  ApplicationDbContext context, UserManager<AppUser> userManager) : base(env, context, userManager) { }
 
-        public IActionResult AddChange(IFormFile file, String username)
+        public async Task<IActionResult> Settings() => View("Settings", await GetSettings());
+
+        public async Task<IActionResult> UpdateInfo(UserSettings model)
         {
-            if (file.Length != 0)
+            if (!ValidSubmitSettings(model))
+                return View("Settings", await GetSettings());
+
+            AppUser user = Context.Users.ToList().Find(el => el.UserName == User.Identity.Name);
+            if (model.Image != null)
             {
-                var dir = _env.ContentRootPath;
-                string path = Path.Combine(dir, "wwwroot\\images\\" + User.Identity.Name + ".png");
-                using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                using (var fileStream = new FileStream(GetImageUrl(), FileMode.Create, FileAccess.Write))
                 {
-                    file.CopyTo(fileStream);
+                    model.Image.CopyTo(fileStream);
                 }
-                AppUser x = _context.Users.ToList().Find(el => el.UserName == User.Identity.Name);
-                x.PicturePath = path;
-                var pat = x.PicturePath;
-                var nam = x.Name;
-                AppUser y = _context.Users.ToList().Find(el => el.UserName == User.Identity.Name);
-                var paty = y.PicturePath;
-                _context.SaveChanges();
+                user.HasPicture = true;
             }
-            return RedirectToAction("Settings");
+
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+            user.BirthDate = model.Birthdate;
+
+            await Context.SaveChangesAsync();
+
+            return View("Settings", await GetSettings());
         }
+
+        public async Task<IActionResult> ChangePassword(UserSettings model)
+        {
+            UserSettings currentSettings = await GetSettings();
+            AppUser user = Context.Users.ToList().Find(el => el.UserName == User.Identity.Name);
+            var result = await UserManager.ChangePasswordAsync(user, model.OldPassword ?? "", model.NewPassword ?? "");
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("OldPassword", result.Errors.ToList()[0].Description);
+                return View("Settings", currentSettings);
+            }
+            return View("Settings", currentSettings);
+        }
+
+        private bool ValidSubmitSettings(UserSettings model)
+        {
+            if (string.IsNullOrEmpty(model.Name?.Trim()) || string.IsNullOrEmpty(model.Name?.Trim()) || string.IsNullOrEmpty(model.Name?.Trim()))
+            {
+                ModelState.AddModelError("Name", "Please fill out everything!");
+                return false;
+            }
+            return true;
+        }
+
+
     }
 }

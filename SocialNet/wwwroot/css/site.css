@@ -2,10 +2,14 @@
 for details on configuring this project to bundle and minify static web assets. */
 @import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
 
-body {
-    /*font-family: 'Shadows Into Light', cursive;*/
+ body {
+   /* font-family: 'Shadows Into Light', cursive;*/
     font-size: 1.4em;
-}
+} 
+
+/*body {
+    font-family: 'Open Sans', sans-serif;
+}*/
 
 a.navbar-brand {
     white-space: normal;

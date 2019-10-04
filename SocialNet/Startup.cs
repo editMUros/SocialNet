@@ -27,12 +27,10 @@ namespace SocialNet
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -40,16 +38,17 @@ namespace SocialNet
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<AppUser>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddIdentity<AppUser, IdentityRole<int>>()
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultTokenProviders()
+             .AddDefaultUI(UIFramework.Bootstrap4);
 
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -59,7 +58,6 @@ namespace SocialNet
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -73,13 +71,52 @@ namespace SocialNet
             {
                 route.MapHub<ChatHub>("/Home/Index");
             });
+
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
+               routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-
             });
+
+            CreateRoles(serviceProvider).Wait();
         }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles   
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
+            string[] roleNames = { "Admin", "User" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database: Question 1  
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole<int>(roleName));
+                }
+            }
+
+            AppUser user = await UserManager.FindByEmailAsync("uros@gmail.com");
+
+            if (user == null)
+            {
+                user = new AppUser()
+                {
+                    UserName = "uros@gmail.com",
+                    Email = "uros@gmail.com",
+                    Name = "Uros",
+                    Surname = "Malesevic",
+                    BirthDate = new DateTime(1996, 9, 22)
+                };
+                await UserManager.CreateAsync(user, "Test@123");
+            }
+            await UserManager.AddToRoleAsync(user, "Admin");
+
+        }
+
     }
 }

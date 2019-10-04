@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Message>
+
+@{
+
+    ViewData["Title"] = "Home Page";
+    var userName = User.Identity.Name;
+}
+
+<div class="jumbotron bg-light">
+    <h2 class="text-center text-primary">
+        <i class="fab fa-facebook-messenger"></i>&nbsp; Public Talk
+    </h2>
+
+    <div class="row">
+        <div class="col-md-12" id="chat">
+            @if (Model != null)
+            {
+                @foreach (var message in Model.OrderBy(m => m.When))
+                {
+                    if (userName == message.Sender.UserName)
+                    {
+                        <div class="row">
+                            <div class="col-md-6 offset-md-6">
+                                <div class="container darker">
+
+                                    <p class="sender text-right text-dark">@message.Sender.UserName</p>
+                                    <p class="text-right text-white">@message.Text</p>
+                                    <span class="time-right text-light">@message.When.ToString("M/dd/yyyy hh:MM tt")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="container">
+
+                                    <p class="sender text-left text-dark">@message.Sender.UserName</p>
+                                    <p class="text-left text-dark">@message.Text</p>
+                                    <span class="time-left text-dark">@message.When.ToString("M/dd/yyyy hh:MM tt")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+            }
+        </div>
+        <div class="col-md-12">
+            <form asp-action="Create"
+                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendAll"
+                  data-ajax="true" data-ajax-method="POST">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input name="Text" class="form-control" id="messageText" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Send" id="submitButton" class="btn btn-outline-primary btn-block" />
+                </div>
+                <input type="hidden" value="@userName" name="username" />
+            </form>
+        </div>
+    </div>
+
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        const userName = "@User.Identity.Name";
+        let currentUserMsg = false;
+
+        function sendAll() {
+            currentUserMsg = true;
+            sendMessage();
+        }
+    </script>
+}
+
+
+@section scripts {
+    <script src="~/signalr/signalr.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/chat.js"></script>
+    <script src="~/js/signalrReqHandler.js"></script>
+}

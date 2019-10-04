@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,38 +13,29 @@ using SocialNet.Models;
 namespace SocialNet.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        public readonly ApplicationDbContext _context;
-
-        public readonly UserManager<AppUser> _userManager;
-
-        public HomeController(ApplicationDbContext context, UserManager<AppUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+        public HomeController(IHostingEnvironment env, ApplicationDbContext context, UserManager<AppUser> userManager) : base(env, context, userManager) { }
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if(User.Identity.IsAuthenticated)
-            {
-                ViewBag.CurrentUserName = currentUser.UserName;
-            }
-            var messages = await _context.Messages.ToListAsync();
-            return View();
+            AppUser currentUser = await UserManager.GetUserAsync(User);
+
+            if (User.IsInRole("Admin"))
+                return View("Administration", UserManager.Users.ToList());
+            else if (currentUser.HasData())
+                return View("Messaging", Context.Messages.Include(x => x.Sender).ToList());
+            else return View("~/Views/Settings/Settings.cshtml", await GetSettings());
         }
 
         public async Task<IActionResult> Create(Message message)
         {
             if (ModelState.IsValid)
             {
-                message.UserName = User.Identity.Name;
-                var sender = await _userManager.GetUserAsync(User);
-                message.UserID = sender.Id;
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
+                var sender = await UserManager.GetUserAsync(User);
+                message.SenderId = sender.Id;
+                await Context.Messages.AddAsync(message);
+                await Context.SaveChangesAsync();
                 return Ok();
             }
             return Error();
@@ -52,11 +43,6 @@ namespace SocialNet.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
-        }
-        public IActionResult Profile(string AccountName)
-        {
-            ViewBag.accountName = AccountName;
             return View();
         }
 

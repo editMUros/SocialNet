@@ -37,19 +37,25 @@ function sendMessage() {
 }
 
 function addMessageToChat(message) {
-    let isCurrentUserMessage = message.userName === username;
+    let isCurrentUserMessage = currentUserMsg;
 
     let container = document.createElement('div');
+    let row = document.createElement('div');
+    let offset = document.createElement('div');
+    offset.className = isCurrentUserMessage ? 'col-md-6 offset-md-6' : 'col-md-6';
+    row.className = 'row';
+
     container.className = isCurrentUserMessage ? "container darker" : "container";
 
     let sender = document.createElement('p');
-    sender.className = "sender";
-    sender.innerHTML = message.userName;
+    sender.className = "sender " + isCurrentUserMessage ? "text-right text-white" : "text-left text-dark";
+    sender.innerHTML = userName;
     let text = document.createElement('p');
+    text.className = isCurrentUserMessage ? "text-right text-white" : "text-left text-dark";
     text.innerHTML = message.text;
 
     let when = document.createElement('span');
-    when.className = isCurrentUserMessage ? "time-left" : "time-right";
+    when.className = isCurrentUserMessage ? "time-right" : "time-left";
     var currentdate = new Date();
     when.innerHTML = 
         (currentdate.getMonth() + 1) + "/"
@@ -60,5 +66,9 @@ function addMessageToChat(message) {
     container.appendChild(sender);
     container.appendChild(text);
     container.appendChild(when);
-    chat.appendChild(container);
+    offset.appendChild(container);
+    row.appendChild(offset);
+    
+    chat.appendChild(row);
+    currentUserMsg = false;
 }

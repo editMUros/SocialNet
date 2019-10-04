@@ -1,26 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Uros\\source\\repos\\SocialNet\\SocialNet\\SocialNet.csproj": {}
+    "E:\\SocialNet\\SocialNet\\SocialNet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Uros\\source\\repos\\SocialNet\\SocialNet\\SocialNet.csproj": {
+    "E:\\SocialNet\\SocialNet\\SocialNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Uros\\source\\repos\\SocialNet\\SocialNet\\SocialNet.csproj",
+        "projectUniqueName": "E:\\SocialNet\\SocialNet\\SocialNet.csproj",
         "projectName": "SocialNet",
-        "projectPath": "C:\\Users\\Uros\\source\\repos\\SocialNet\\SocialNet\\SocialNet.csproj",
+        "projectPath": "E:\\SocialNet\\SocialNet\\SocialNet.csproj",
         "packagesPath": "C:\\Users\\Uros\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Uros\\source\\repos\\SocialNet\\SocialNet\\obj\\",
+        "outputPath": "E:\\SocialNet\\SocialNet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\Uros\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.2"

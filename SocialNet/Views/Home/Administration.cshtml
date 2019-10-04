@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model  List<AppUser>
+@{ 
+    int i = 0;
+}
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="~/css/ProfileList.css" rel="stylesheet" />
+<div class="content">
+    <div class="container overflow-auto">
+
+        @while(i < Model.Count() && Model != null)
+        {
+            @if (i % 3 == 0)
+            {
+                <div class="row">
+                    @for (int j = i; j < Model.Count() && j < i + 3; j++)
+                            {
+                                i++;
+                                AppUser user = Model[j];
+
+                    <div class="col-lg-4">
+                        <div class="text-center card-box">
+                            <div class="member-card pt-2 pb-2">
+                                @if (user.HasPicture == true)
+                                {
+                                    <div class="thumb-lg member-thumb mx-auto"><img src="~/images/@(user.Email + ".png")" class="rounded-circle img-thumbnail" alt="profile-image"></div>
+                                }
+                                else
+                                {
+                                    <div class="thumb-lg member-thumb mx-auto"><img src="~/images/noimage.jpg")" class="rounded-circle img-thumbnail" alt="profile-image"></div>
+                                }
+                                <div class="">
+                                    <h4>@(user.Name + " " + user.Surname)</h4>
+                                
+                                </div>
+                                <form asp-controller="Administration" asp-action="DeleteAsync">
+                                    <input type="text" name="email" value="@user.Email" hidden />
+                                    @if (user.Email == User.Identity.Name)
+                                    {
+                                        <input type="submit" value="Delete" class="btn btn-primary mt-3 btn-rounded waves-effect w-md waves-light" disabled>
+                                    }
+                                    else
+                                    {
+                                        <input type="submit" value="Delete" class="btn btn-primary mt-3 btn-rounded waves-effect w-md waves-light">
+                                    }
+                                    <div class="mt-4">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="mt-3">
+                                                    <h4>Email</h4>
+                                                    <p class="mb-0 text-muted">@user.Email</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="mt-3">
+                                                    <h4>Birth date</h4>
+                                                    <p class="mb-0 text-muted">@(user.BirthDate.Value.Day + "/" + user.BirthDate.Value.Month + "/" + user.BirthDate.Value.Year)</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col -->
+
+                    }
+
+                </div>
+
+                <!-- end row -->
+            }
+         
+        }
+    </div>
+    <!-- container -->
+</div>
