@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\SocialNet\\SocialNet\\SocialNet.csproj": {}
+    "C:\\Users\\xenox\\Desktop\\SocialNet-master\\SocialNet\\SocialNet.csproj": {}
   },
   "projects": {
-    "E:\\SocialNet\\SocialNet\\SocialNet.csproj": {
+    "C:\\Users\\xenox\\Desktop\\SocialNet-master\\SocialNet\\SocialNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\SocialNet\\SocialNet\\SocialNet.csproj",
+        "projectUniqueName": "C:\\Users\\xenox\\Desktop\\SocialNet-master\\SocialNet\\SocialNet.csproj",
         "projectName": "SocialNet",
-        "projectPath": "E:\\SocialNet\\SocialNet\\SocialNet.csproj",
-        "packagesPath": "C:\\Users\\Uros\\.nuget\\packages\\",
-        "outputPath": "E:\\SocialNet\\SocialNet\\obj\\",
+        "projectPath": "C:\\Users\\xenox\\Desktop\\SocialNet-master\\SocialNet\\SocialNet.csproj",
+        "packagesPath": "C:\\Users\\xenox\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\xenox\\Desktop\\SocialNet-master\\SocialNet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Uros\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\xenox\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
