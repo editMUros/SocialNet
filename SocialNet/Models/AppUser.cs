@@ -9,6 +9,9 @@ namespace SocialNet.Models
         public AppUser()
         {
             Messages = new HashSet<Message>();
+            Name = "-";
+            Surname = "-";
+            BirthDate = new DateTime(1, 1, 1);
         }
 
         public string Name { get; set; }
@@ -21,7 +24,7 @@ namespace SocialNet.Models
 
         public virtual ICollection<Message> Messages {get; set;}
 
-        public bool HasData() => Name != null && Surname != null && BirthDate != null;
+        public bool HasData() => (Name != "-") && (Surname != "-") && (BirthDate != new DateTime(1, 1, 1));
 
     }
 }
